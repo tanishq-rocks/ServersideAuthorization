@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
-import secret from "../config/jwt.json" assert { type: "json" };
+// import secret from "../config/jwt.json" assert { type: "json" };
 
-mongoose.connect('mongodb://127.0.0.1:27017/test');
+// console.log("process.env.mongodb_URL", process.env.mongodb_URL);
+mongoose.connect(process.env.mongodb_URL);
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -39,7 +40,8 @@ UserSchema.statics.findByCredential = async (name, password) => {
 // while signup or sign in we need to generate token
 UserSchema.methods.generateAuthToken = async function () {
     const user = this;
-    return await jwt.sign({_id: user._id}, secret.key);
+    // return await jwt.sign({_id: user._id}, secret.key);
+    return await jwt.sign({_id: user._id}, process.env.jwt_KEY);
 }
 
 // For hiding user sensitive information
